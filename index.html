@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Visualizzatore Chat</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <div class="chat-container">
+        <!-- DATA STICKY -->
+        <div id="sticky-date"></div>
+
+        <!-- MESSAGGI -->
+        <div id="messages"></div>
+    </div>
+
+    <!-- BARRA NAVIGAZIONE RICERCA -->
+    <div id="search-nav" style="display:none">
+        <span id="search-counter">0 / 0</span>
+        <button id="prev-btn">⬆️</button>
+        <button id="next-btn">⬇️</button>
+    </div>
+
+    <button id="search-btn">🔍</button>
+    <input type="text" id="search-input" placeholder="Cerca messaggi..." style="display:none" />
+
+    <script src="app.js"></script>
+</body>
+</html>

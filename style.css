@@ -1,0 +1,146 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e5ddd5;
+    margin: 0;
+    height: 100vh;
+}
+
+.chat-container {
+    height: 100vh;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    background: #f7f7f7;
+}
+
+/* DATA STICKY (sempre visibile) */
+#sticky-date {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    align-self: center;
+    background: #d3d3d3;
+    color: #333;
+    padding: 4px 14px;
+    border-radius: 10px;
+    font-size: 0.85em;
+    margin-bottom: 10px;
+    user-select: none;
+}
+
+/* MESSAGGI */
+.message {
+    max-width: 60%;
+    margin: 6px 0;
+    padding: 8px 12px 18px 12px; /* spazio per l’orario */
+    border-radius: 15px;
+    position: relative;
+    word-wrap: break-word;
+}
+
+    /* khirsy → destra verde */
+    .message.khirsy {
+        align-self: flex-end;
+        background-color: #dcf8c6;
+    }
+
+    /* . → sinistra bianco */
+    .message.sedan {
+        align-self: flex-start;
+        background-color: #ffffff;
+        border: 1px solid #ccc;
+    }
+
+.sender {
+    font-weight: bold;
+    font-size: 0.85em;
+    margin-bottom: 4px;
+    color: #555;
+}
+
+/* ORARIO */
+.time {
+    font-size: 0.7em;
+    color: #555;
+    position: absolute;
+    bottom: 4px;
+    right: 8px;
+    user-select: none;
+}
+
+/* SEARCH */
+#search-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 24px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 50%;
+    background-color: #25d366;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+#search-input {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    padding: 8px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    width: 250px;
+    font-size: 16px;
+}
+
+#messages {
+    display: flex;
+    flex-direction: column;
+}
+
+.sticker img {
+    display: block;
+    max-width: 150px;
+    height: auto;
+}
+
+#search-nav {
+    position: fixed;
+    bottom: 110px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+}
+
+    /* Bottoni freccette */
+    #search-nav button {
+        border: none;
+        background: #25d366;
+        color: white;
+        font-size: 16px;
+        padding: 6px;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+/* Contatore risultati */
+#search-counter {
+    color: #333;
+    background: #ffffff;
+    font-size: 13px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    user-select: none;
+}
+
+mark {
+    background: yellow;
+    padding: 0 2px;
+}
