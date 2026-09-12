@@ -1,147 +1,363 @@
+:root {
+  --header-bg: #075E54;
+  --header-fg: #ffffff;
+  --wallpaper: #e5ddd5;
+  --wallpaper-pattern: rgba(0, 0, 0, 0.03);
+  --bubble-out: #dcf8c6;
+  --bubble-in: #ffffff;
+  --bubble-border: #e2e2e2;
+  --text-main: #1f1f1f;
+  --text-muted: #667781;
+  --accent: #25d366;
+  --pill-bg: #ffffff;
+  --pill-fg: #444444;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  --mark-bg: #ffe08a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --header-bg: #202c33;
+    --wallpaper: #0b141a;
+    --wallpaper-pattern: rgba(255, 255, 255, 0.03);
+    --bubble-out: #005c4b;
+    --bubble-in: #202c33;
+    --bubble-border: #2a3942;
+    --text-main: #e9edef;
+    --text-muted: #8696a0;
+    --pill-bg: #182229;
+    --pill-fg: #d1d7db;
+    --mark-bg: #7a6a1f;
+  }
+}
+
+* { box-sizing: border-box; }
+
+/* Diverse classi qui sotto (.lightbox, .search-bar, .messages, .jump-latest)
+   impostano "display: flex" per il loro layout normale. Senza questa regola,
+   quel "display" scritto dall'autore ha la precedenza sulla regola di default
+   del browser per l'attributo hidden, quindi impostare elemento.hidden = true
+   da JS non li nasconderebbe mai (bug reale riscontrato: il lightbox restava
+   sempre visibile a schermo intero fin dal caricamento della pagina).
+   Questa regola garantisce che hidden vinca sempre, su qualunque elemento. */
+[hidden] {
+  display: none !important;
+}
+
+html { scroll-behavior: smooth; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #e5ddd5;
-    margin: 0;
-    height: 100vh;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text-main);
+  background: var(--wallpaper);
+  height: 100dvh;
+  overflow: hidden;
 }
 
-.chat-container {
-    height: 100vh;
-    overflow-y: auto;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    background: #f7f7f7;
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
 }
 
-/* DATA STICKY (sempre visibile) */
-#sticky-date {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    align-self: center;
-    background: #d3d3d3;
-    color: #333;
-    padding: 4px 14px;
-    border-radius: 10px;
-    font-size: 0.85em;
-    margin-bottom: 10px;
-    user-select: none;
+/* HEADER */
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--header-bg);
+  color: var(--header-fg);
+  padding: 10px 14px;
+  padding-top: max(10px, env(safe-area-inset-top));
+  flex: 0 0 auto;
+  box-shadow: var(--shadow);
+  z-index: 20;
 }
 
-/* MESSAGGI */
-.message {
-    max-width: 60%;
-    margin: 6px 0;
-    padding: 8px 12px 18px 12px; /* spazio per l’orario */
-    border-radius: 15px;
-    position: relative;
-    word-wrap: break-word;
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex: 0 0 auto;
 }
 
-    /* khirsy → destra verde */
-    .message.khirsy {
-        align-self: flex-end;
-        background-color: #dcf8c6;
-    }
+.header-info { flex: 1 1 auto; min-width: 0; }
+.header-info h1 { font-size: 16px; margin: 0; font-weight: 600; }
+.header-info p { font-size: 12.5px; margin: 1px 0 0; opacity: 0.85; }
 
-    /* . → sinistra bianco */
-    .message.sedan {
-        align-self: flex-start;
-        background-color: #ffffff;
-        border: 1px solid #ccc;
-    }
-
-.sender {
-    font-weight: bold;
-    font-size: 0.85em;
-    margin-bottom: 4px;
-    color: #555;
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  padding: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+.icon-btn:hover { background: rgba(255, 255, 255, 0.12); }
+.icon-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.icon-btn:disabled { opacity: 0.35; cursor: default; }
+.icon-btn:disabled:hover { background: transparent; }
 
-/* ORARIO */
-.time {
-    font-size: 0.7em;
-    color: #555;
-    position: absolute;
-    bottom: 4px;
-    right: 8px;
-    user-select: none;
-}
-
-/* SEARCH */
-#search-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    font-size: 24px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 50%;
-    background-color: #25d366;
-    color: white;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+/* SEARCH BAR */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--header-bg);
+  color: var(--header-fg);
+  padding: 8px 14px 12px;
+  flex: 0 0 auto;
+  z-index: 19;
 }
 
 #search-input {
-    position: fixed;
-    bottom: 70px;
-    right: 20px;
-    padding: 8px;
-    border-radius: 20px;
-    border: 1px solid #ccc;
-    width: 250px;
-    font-size: 16px;
+  flex: 1 1 auto;
+  min-width: 0;
+  border: none;
+  border-radius: 18px;
+  padding: 8px 14px;
+  font-size: 15px;
+  background: rgba(255, 255, 255, 0.92);
+}
+#search-input:focus { outline: 2px solid var(--accent); }
+
+.search-counter {
+  font-size: 12.5px;
+  min-width: 44px;
+  text-align: center;
+  opacity: 0.9;
+  white-space: nowrap;
 }
 
-#messages {
-    display: flex;
-    flex-direction: column;
+.search-bar .icon-btn.small svg { display: block; }
+
+/* CHAT AREA */
+.chat-container {
+  position: relative;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 14px 4% 20px;
+  background-image:
+    radial-gradient(var(--wallpaper-pattern) 1px, transparent 1px);
+  background-size: 18px 18px;
+  -webkit-overflow-scrolling: touch;
 }
 
-.sticker img {
-    display: block;
-    max-width: 150px;
-    height: auto;
+.state-message {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 40px 20px;
 }
 
-#search-nav {
-    position: fixed;
-    bottom: 110px;
-    right: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    align-items: center;
+.sticky-date {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  width: fit-content;
+  margin: 0 auto 10px;
+  background: var(--pill-bg);
+  color: var(--pill-fg);
+  padding: 5px 14px;
+  border-radius: 10px;
+  font-size: 0.8em;
+  box-shadow: var(--shadow);
+  user-select: none;
 }
 
-    /* Bottoni freccette */
-    #search-nav button {
-        border: none;
-        background: #25d366;
-        color: white;
-        font-size: 16px;
-        padding: 6px;
-        border-radius: 50%;
-        cursor: pointer;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    }
+.messages {
+  display: flex;
+  flex-direction: column;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
 
-/* Contatore risultati */
-#search-counter {
-    color: #333;
-    background: #ffffff;
-    font-size: 13px;
-    padding: 4px 8px;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    user-select: none;
+.date-separator {
+  display: flex;
+  justify-content: center;
+  margin: 14px 0 8px;
+}
+.date-separator span {
+  background: var(--pill-bg);
+  color: var(--pill-fg);
+  font-size: 0.78em;
+  padding: 5px 14px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  text-transform: capitalize;
+}
+
+/* MESSAGE BUBBLES */
+.message {
+  max-width: 78%;
+  margin: 3px 0;
+  padding: 7px 10px 16px;
+  border-radius: 10px;
+  position: relative;
+  word-wrap: break-word;
+  box-shadow: var(--shadow);
+  font-size: 14.5px;
+  line-height: 1.4;
+}
+
+@media (min-width: 640px) {
+  .message { max-width: 60%; }
+}
+
+.message.from-khirsy {
+  align-self: flex-end;
+  background: var(--bubble-out);
+  border-top-right-radius: 2px;
+}
+
+.message.from-contact {
+  align-self: flex-start;
+  background: var(--bubble-in);
+  border: 1px solid var(--bubble-border);
+  border-top-left-radius: 2px;
+}
+
+.text {
+  white-space: pre-wrap;
+  color: var(--text-main);
+}
+
+.text a { color: #0a6ea5; text-decoration: underline; }
+@media (prefers-color-scheme: dark) {
+  .text a { color: #53bdeb; }
+}
+
+.time {
+  font-size: 0.68em;
+  color: var(--text-muted);
+  position: absolute;
+  bottom: 4px;
+  right: 10px;
+  user-select: none;
 }
 
 mark {
-    background: yellow;
-    padding: 0 2px;
+  background: var(--mark-bg);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+/* MEDIA BUBBLES */
+.media-bubble.image-bubble {
+  margin: -7px -10px -16px;
+  border-radius: 9px;
+  overflow: hidden;
+  padding-bottom: 18px;
+  position: relative;
+}
+.media-bubble.image-bubble img {
+  display: block;
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+  cursor: zoom-in;
+}
+
+.media-bubble.audio-bubble {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 220px;
+}
+.audio-label {
+  font-size: 0.78em;
+  color: var(--text-muted);
+}
+.media-bubble.audio-bubble audio {
+  width: 100%;
+  height: 36px;
+}
+
+.media-bubble.file-bubble {
+  font-size: 0.85em;
+  color: var(--text-muted);
+}
+
+.media-missing {
+  font-size: 0.82em;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 4px 2px;
+}
+
+/* JUMP TO LATEST */
+.jump-latest {
+  position: fixed;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(18px, env(safe-area-inset-bottom));
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--pill-bg);
+  color: var(--pill-fg);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 15;
+}
+.jump-latest:hover { filter: brightness(0.95); }
+
+/* LIGHTBOX */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+.lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 6px;
+}
+.lightbox-error {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-size: 14px;
+  max-width: 320px;
+  text-align: center;
+}
+.lightbox-close {
+  position: absolute;
+  top: max(16px, env(safe-area-inset-top));
+  right: 16px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
 }
 
